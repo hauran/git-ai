@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import inquirer from 'inquirer';
-import type { CLIOptions, CommitStyle, AIPromptContext } from './types.js';
+import type { CLIOptions, CommitStyle, AIPromptContext, CommitMessage } from './types.js';
 import { gitService } from './git.js';
 import { createAIService } from './ai.js';
 import { configManager } from './config.js';
@@ -92,10 +92,10 @@ export async function generateCommitMessage(options: CLIOptions): Promise<void> 
       
       switch (action) {
         case 'commit':
-          await performCommit(result.message.title);
+          await performCommit(formatCommitMessage(result.message));
           break;
         case 'edit':
-          const editedMessage = await promptForEdit(result.message.title);
+          const editedMessage = await promptForEdit(formatCommitMessage(result.message));
           if (editedMessage) {
             await performCommit(editedMessage);
           }
@@ -109,12 +109,19 @@ export async function generateCommitMessage(options: CLIOptions): Promise<void> 
           break;
       }
     } else if (options.commit) {
-      await performCommit(result.message.title);
+      await performCommit(formatCommitMessage(result.message));
     }
 
   } catch (error) {
     throw error;
   }
+}
+
+function formatCommitMessage(message: CommitMessage): string {
+  if (message.body) {
+    return `${message.title}\n\n${message.body}`;
+  }
+  return message.title;
 }
 
 async function promptForAction(): Promise<string> {
