@@ -176,8 +176,20 @@ async function performCommit(message: string): Promise<void> {
     await gitService.commit(message);
     console.log(chalk.green('✅ Successfully committed!'));
     
-    // Show the commit
-    console.log(chalk.gray(`\n"${message}"`));
+    // Show the commit message properly formatted
+    const lines = message.split('\n');
+    const title = lines[0];
+    const body = lines.slice(2).join('\n'); // Skip empty line after title
+    
+    console.log(chalk.gray('\nCommit message:'));
+    console.log(chalk.white.bold(`"${title}"`));
+    
+    if (body.trim()) {
+      console.log(chalk.gray('\nWith body:'));
+      body.split('\n').forEach(line => {
+        console.log(chalk.gray(`  ${line}`));
+      });
+    }
   } catch (error) {
     throw new Error(`Failed to commit: ${error}`);
   }
