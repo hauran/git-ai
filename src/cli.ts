@@ -17,7 +17,7 @@ program
 program
   .option('-c, --commit', 'automatically commit with generated message')
   .option('-i, --interactive', 'interactive mode for message review')
-  .option('-s, --style <type>', 'commit message style (conventional|standard|detailed)', 'conventional')
+  .option('-s, --style <type>', 'commit message style (conventional|standard|detailed)')
   .option('--dry-run', 'show what would be committed without committing')
   .option('-v, --verbose', 'verbose output')
   .action(async (options: CLIOptions) => {
