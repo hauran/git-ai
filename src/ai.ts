@@ -55,7 +55,7 @@ export class AIService {
   }
 
   private getSystemPrompt(style: CommitStyle): string {
-    const basePrompt = `You are an expert software developer who writes clear, concise commit messages. 
+    const basePrompt = `You are an expert software developer who writes clear, description commit messages. 
 Analyze the provided git diff and generate an appropriate commit message.`;
 
     switch (style) {
@@ -66,7 +66,6 @@ Follow the Conventional Commits specification:
 - Format: <type>[optional scope]: <description>
 - Types: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert
 - Use lowercase for everything
-- Keep the description under 50 characters
 - Add body and footer if breaking changes or additional context needed
 
 Examples:
@@ -78,7 +77,6 @@ Examples:
         return `${basePrompt}
 
 Create detailed commit messages with:
-- Clear, descriptive title (50 chars max)
 - Detailed body explaining what and why
 - Bullet points for multiple changes
 - Technical details when relevant`;
@@ -89,8 +87,7 @@ Create detailed commit messages with:
 Create standard commit messages:
 - Clear, concise title describing the change
 - Present tense, imperative mood
-- No period at the end
-- 50 characters or less for the title`;
+- No period at the end`;
     }
   }
 

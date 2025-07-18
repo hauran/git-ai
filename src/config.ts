@@ -4,8 +4,25 @@ import { join } from 'path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import type { AppConfig, AIConfig } from './types.js';
 
-// Load environment variables
-config();
+// Load environment variables from multiple locations
+const loadEnvironmentVariables = () => {
+  // 1. Try to load from current working directory (.env)
+  config();
+  
+  // 2. Try to load from home directory (~/.env)
+  const homeEnvPath = join(homedir(), '.env');
+  if (existsSync(homeEnvPath)) {
+    config({ path: homeEnvPath });
+  }
+  
+  // 3. Try to load from git-ai config directory (~/.git-ai/.env)
+  const configEnvPath = join(homedir(), '.git-ai', '.env');
+  if (existsSync(configEnvPath)) {
+    config({ path: configEnvPath });
+  }
+};
+
+loadEnvironmentVariables();
 
 const CONFIG_DIR = join(homedir(), '.git-ai');
 const CONFIG_FILE = join(CONFIG_DIR, 'config.json');
@@ -13,13 +30,13 @@ const CONFIG_FILE = join(CONFIG_DIR, 'config.json');
 const DEFAULT_CONFIG: AppConfig = {
   ai: {
     apiKey: process.env.OPENAI_API_KEY || '',
-    model: process.env.AI_MODEL || 'gpt-3.5-turbo',
+    model: process.env.AI_MODEL || 'gpt-4o-mini',
     maxTokens: parseInt(process.env.AI_MAX_TOKENS || '150'),
     temperature: parseFloat(process.env.AI_TEMPERATURE || '0.7'),
     organization: process.env.OPENAI_ORGANIZATION,
   },
   git: {
-    defaultStyle: (process.env.DEFAULT_COMMIT_STYLE as any) || 'conventional',
+    defaultStyle: (process.env.DEFAULT_COMMIT_STYLE as any) || 'detailed',
     maxDiffSize: 50000, // 50KB max diff size
     excludeFiles: ['package-lock.json', 'yarn.lock', '*.min.js', '*.map'],
   },
@@ -77,10 +94,15 @@ export class ConfigManager {
     
     if (!ai.apiKey) {
       throw new Error(
-        'OpenAI API key not found. Please:\n' +
-        '1. Create a .env file with: OPENAI_API_KEY=your_key_here\n' +
-        '2. Or set environment variable: export OPENAI_API_KEY=your_key_here\n' +
-        '3. Or run: git-ai config --api-key YOUR_KEY\n\n' +
+        'OpenAI API key not found. Please choose one of these options:\n\n' +
+        '1. Create a global .env file:\n' +
+        '   echo "OPENAI_API_KEY=your_key_here" > ~/.git-ai/.env\n\n' +
+        '2. Create a user-wide .env file:\n' +
+        '   echo "OPENAI_API_KEY=your_key_here" > ~/.env\n\n' +
+        '3. Set environment variable:\n' +
+        '   export OPENAI_API_KEY=your_key_here\n\n' +
+        '4. Use CLI config:\n' +
+        '   git-ai config --api-key YOUR_KEY\n\n' +
         'Get your API key from: https://platform.openai.com/api-keys'
       );
     }

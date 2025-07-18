@@ -90,11 +90,12 @@ Examples:
 
 First time setup:
   1. Get an API key from https://platform.openai.com/api-keys
-  2. Create a .env file: ${chalk.cyan('echo "OPENAI_API_KEY=your_key_here" > .env')}
+  2. Create a global .env file: ${chalk.cyan('echo "OPENAI_API_KEY=your_key_here" > ~/.git-ai/.env')}
   3. Stage your changes: ${chalk.cyan('git add .')}
   4. Generate commit: ${chalk.cyan('git-ai')}
 
 Alternative setup methods:
+  • User-wide .env: ${chalk.cyan('echo "OPENAI_API_KEY=your_key_here" > ~/.env')}
   • Environment variable: ${chalk.cyan('export OPENAI_API_KEY=your_key_here')}
   • Config command: ${chalk.cyan('git-ai config --api-key YOUR_KEY')}
 `);

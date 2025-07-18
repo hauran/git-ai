@@ -44,10 +44,26 @@ npm install -g .
 
 2. **Configure your API key** (choose one method):
 
-   **Option A: .env file (recommended)**
+   **Option A: Global .env file (recommended)**
    ```bash
-   # In your project root directory
-   echo "OPENAI_API_KEY=your_key_here" > .env
+   # Works from any directory
+   echo "OPENAI_API_KEY=your_key_here" > ~/.git-ai/.env
+   ```
+
+   **Option B: User-wide .env file**
+   ```bash
+   # Works from any directory
+   echo "OPENAI_API_KEY=your_key_here" > ~/.env
+   ```
+
+   **Option C: Environment variable**
+   ```bash
+   export OPENAI_API_KEY=your_key_here
+   ```
+
+   **Option D: CLI configuration**
+   ```bash
+   git-ai config --api-key YOUR_API_KEY
    ```
 
    Your `.env` file can also include optional settings:
@@ -57,16 +73,6 @@ npm install -g .
    AI_MAX_TOKENS=150
    AI_TEMPERATURE=0.7
    DEFAULT_COMMIT_STYLE=conventional
-   ```
-
-   **Option B: Environment variable**
-   ```bash
-   export OPENAI_API_KEY=your_key_here
-   ```
-
-   **Option C: CLI configuration**
-   ```bash
-   git-ai config --api-key YOUR_API_KEY
    ```
 
 3. **You're ready to go!**
@@ -149,19 +155,30 @@ Configuration is loaded in the following priority order:
 2. **Config file** `~/.git-ai/config.json` 
 3. **Default values** (lowest priority)
 
-You can edit the config file directly or use the CLI commands, but environment variables will always override other settings.
+For `.env` files, git-ai looks in these locations (in order):
+1. **Current directory** `.env` (project-specific)
+2. **Home directory** `~/.env` (user-wide)
+3. **Git-ai config directory** `~/.git-ai/.env` (git-ai specific)
+
+Environment variables will always override settings from files.
 
 ### Environment Variables
 
 git-ai automatically reads configuration from `.env` files or environment variables:
 
-**Using .env file (recommended):**
-```env
+**Using global .env file (recommended):**
+```bash
+# Create the config directory if it doesn't exist
+mkdir -p ~/.git-ai
+
+# Create the .env file
+cat > ~/.git-ai/.env << EOF
 OPENAI_API_KEY=your-api-key
 AI_MODEL=gpt-3.5-turbo
 AI_MAX_TOKENS=150
 AI_TEMPERATURE=0.7
 DEFAULT_COMMIT_STYLE=conventional
+EOF
 ```
 
 **Using shell environment:**
@@ -275,12 +292,16 @@ git-ai --interactive
 # 📝 Generated commit message:
 # feat: add user authentication system
 # 
-# What would you like to do?
-# ✅ Commit with this message
-# ✏️  Edit the message  
-# 🔄 Regenerate message
-# ❌ Cancel
+# Options:
+#   [c] Commit with this message
+#   [e] Edit the message
+#   [r] Regenerate message
+#   [x] Cancel
+#
+# Choose an option (cerx)
 ```
+
+**Keyboard shortcuts:** Press `c`, `e`, `r`, or `x` directly to select an option quickly!
 
 ## 🐛 Troubleshooting
 
@@ -294,8 +315,11 @@ git add .
 
 **"OpenAI API key not found"**
 ```bash
-# Create .env file (recommended)
-echo "OPENAI_API_KEY=your_key_here" > .env
+# Create global .env file (recommended)
+echo "OPENAI_API_KEY=your_key_here" > ~/.git-ai/.env
+
+# Or create user-wide .env file
+echo "OPENAI_API_KEY=your_key_here" > ~/.env
 
 # Or set environment variable
 export OPENAI_API_KEY=your_key_here

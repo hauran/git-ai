@@ -28,7 +28,7 @@ export async function generateCommitMessage(options: CLIOptions): Promise<void> 
       throw new Error('No staged changes found. Stage your changes with "git add" first.');
     }
 
-    console.log(chalk.blue('🔍 Analyzing staged changes...'));
+    console.log(chalk.blue('Analyzing staged changes...'));
 
     // Get git diff and context
     const diff = await gitService.getStagedDiff();
@@ -59,14 +59,14 @@ export async function generateCommitMessage(options: CLIOptions): Promise<void> 
       previousCommits: recentCommits,
     };
 
-    console.log(chalk.blue('🤖 Generating commit message...'));
+    console.log(chalk.blue('Generating commit message...'));
 
     // Generate commit message using AI
     const aiService = createAIService(configManager.getAIConfig());
     const result = await aiService.generateCommitMessage(context);
 
     // Display the generated message
-    console.log('\n' + chalk.green('📝 Generated commit message:'));
+    console.log('\n' + chalk.green('Generated commit message:'));
     console.log(chalk.white.bold(result.message.title));
     
     if (result.message.body) {
@@ -118,16 +118,25 @@ export async function generateCommitMessage(options: CLIOptions): Promise<void> 
 }
 
 async function promptForAction(): Promise<string> {
+  // Show options first
+  console.log(chalk.gray('Options:'));
+  console.log(chalk.gray('  [c] Commit with this message'));
+  console.log(chalk.gray('  [e] Edit the message'));
+  console.log(chalk.gray('  [r] Regenerate message'));
+  console.log(chalk.gray('  [x] Cancel'));
+  console.log();
+
   const { action } = await inquirer.prompt([
     {
-      type: 'list',
+      type: 'expand',
       name: 'action',
-      message: 'What would you like to do?',
+      message: chalk.reset('Choose an option'),
+      prefix: '',
       choices: [
-        { name: '✅ Commit with this message', value: 'commit' },
-        { name: '✏️  Edit the message', value: 'edit' },
-        { name: '🔄 Regenerate message', value: 'regenerate' },
-        { name: '❌ Cancel', value: 'cancel' },
+        { key: 'c', name: 'Commit with this message', value: 'commit' },
+        { key: 'e', name: 'Edit the message', value: 'edit' },
+        { key: 'r', name: 'Regenerate message', value: 'regenerate' },
+        { key: 'x', name: 'Cancel', value: 'cancel' },
       ],
     },
   ]);
@@ -140,7 +149,8 @@ async function promptForEdit(originalMessage: string): Promise<string | null> {
     {
       type: 'input',
       name: 'editedMessage',
-      message: 'Edit your commit message:',
+      message: chalk.reset('Edit your commit message:'),
+      prefix: '',
       default: originalMessage,
     },
   ]);
