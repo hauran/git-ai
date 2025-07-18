@@ -79,6 +79,8 @@ Examples:
 Create detailed commit messages with:
 - Detailed body explaining what
 - Bullet points for multiple changes
+- Be concise and to the point
+- Omit any extra text like "This commit" or "This change"
 - Technical details when relevant`;
 
       default: // standard
