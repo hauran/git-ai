@@ -45,11 +45,11 @@ npm install -g .
    echo "OPENAI_API_KEY=your_key_here" > ~/.git-ai/.env
    ```
 
-   Your `.env` file can also include optional settings:
+   Your `~/.git-ai/.env` file can also include optional settings:
    ```env
    OPENAI_API_KEY=your_key_here
    AI_MODEL=gpt-4o-mini
-   AI_MAX_TOKENS=150
+   AI_MAX_TOKENS=100
    AI_TEMPERATURE=0.7
    DEFAULT_COMMIT_STYLE=conventional
    ```
@@ -95,7 +95,7 @@ mkdir -p ~/.git-ai
 cat > ~/.git-ai/.env << EOF
 OPENAI_API_KEY=your-api-key
 AI_MODEL=gpt-4o-mini
-AI_MAX_TOKENS=150
+AI_MAX_TOKENS=100
 AI_TEMPERATURE=0.7
 DEFAULT_COMMIT_STYLE=conventional
 EOF

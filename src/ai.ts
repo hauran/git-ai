@@ -77,7 +77,7 @@ Examples:
         return `${basePrompt}
 
 Create detailed commit messages with:
-- Detailed body explaining what and why
+- Detailed body explaining what
 - Bullet points for multiple changes
 - Technical details when relevant`;
 

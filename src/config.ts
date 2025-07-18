@@ -31,7 +31,7 @@ const DEFAULT_CONFIG: AppConfig = {
   ai: {
     apiKey: process.env.OPENAI_API_KEY || '',
     model: process.env.AI_MODEL || 'gpt-4o-mini',
-    maxTokens: parseInt(process.env.AI_MAX_TOKENS || '150'),
+    maxTokens: parseInt(process.env.AI_MAX_TOKENS || '100'),
     temperature: parseFloat(process.env.AI_TEMPERATURE || '0.7'),
     organization: process.env.OPENAI_ORGANIZATION,
   },
