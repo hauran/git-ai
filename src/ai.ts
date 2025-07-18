@@ -141,7 +141,16 @@ Create standard commit messages:
   }
 
   private parseAIResponse(content: string, style: CommitStyle): GeneratedCommit {
-    const lines = content.trim().split('\n').filter(line => line.trim());
+    // Clean up markdown code blocks and other formatting
+    let cleanContent = content.trim();
+    
+    // Remove markdown code blocks (```...```)
+    cleanContent = cleanContent.replace(/^```[\s\S]*?\n/, '').replace(/\n```$/, '');
+    
+    // Remove any remaining backticks from start/end
+    cleanContent = cleanContent.replace(/^`+/, '').replace(/`+$/, '');
+    
+    const lines = cleanContent.split('\n').filter(line => line.trim());
     
     if (lines.length === 0) {
       throw new Error('Empty response from AI');
